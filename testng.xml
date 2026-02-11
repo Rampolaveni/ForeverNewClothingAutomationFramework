@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <listeners>
+        <listener class-name="com.kpmg.webAutomation.common.Listeners"/>
+    </listeners>
+    <test verbose="2" preserve-order="true" name="C:/Users/Supriya/Desktop/webAutomationSeleniumFramework/KPMGAutomationFramework">
+    <classes>
+        <class name="com.kpmg.automationTests.kpmg.functional.LoginTest">
+            <methods>
+                <include name="verifyLoginfromHomePage"/>
+            </methods>
+        </class>
+    </classes>
+</test>
+</suite>
+

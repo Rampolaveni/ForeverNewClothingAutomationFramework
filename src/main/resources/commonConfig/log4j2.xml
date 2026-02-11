@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="60">
+
+    <!-- ============================= -->
+    <!--        PROPERTIES            -->
+    <!-- ============================= -->
+
+    <Properties>
+        <Property name="LOG_ROOT">${sys:logRoot}</Property>
+        <Property name="LOG_DATE">${sys:logDate}</Property>
+        <Property name="RUN_ID">${sys:runId}</Property>
+    </Properties>
+
+    <!-- ============================= -->
+    <!--        APPENDERS             -->
+    <!-- ============================= -->
+
+    <Appenders>
+
+        <!-- Rolling file per run -->
+        <RollingFile name="FrameworkFile"
+                     fileName="${LOG_ROOT}/${LOG_DATE}/${RUN_ID}.log"
+                     filePattern="${LOG_ROOT}/${LOG_DATE}/${RUN_ID}-%i.log.gz">
+
+            <PatternLayout>
+                <Pattern>
+                    %d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %c - %msg%n
+                </Pattern>
+            </PatternLayout>
+
+            <Policies>
+                <SizeBasedTriggeringPolicy size="20MB"/>
+            </Policies>
+
+        </RollingFile>
+
+        <!-- Console output -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss} %-5level %c - %msg%n"/>
+        </Console>
+
+    </Appenders>
+
+    <!-- ============================= -->
+    <!--        LOGGERS               -->
+    <!-- ============================= -->
+
+    <Loggers>
+
+        <!-- Framework logs -->
+        <Logger name="com.kpmg" level="info" additivity="false">
+            <AppenderRef ref="FrameworkFile"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!-- Noise reduction -->
+        <Logger name="org.openqa.selenium" level="warn"/>
+        <Logger name="org.testng" level="warn"/>
+
+        <!-- Root -->
+        <Root level="error">
+            <AppenderRef ref="FrameworkFile"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
