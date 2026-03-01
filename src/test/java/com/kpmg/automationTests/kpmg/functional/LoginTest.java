@@ -12,4 +12,9 @@ public class LoginTest extends SetUpTest {
     public void verifyLoginfromHomePage() throws Exception {
        homePageScenario.verifyUserDataFromHomePage();
     }
+
+    @Test
+    public void verifyLoginfromHomePageTwo() throws Exception {
+        homePageScenario.verifyUserDataFromHomePageTwo();
+    }
 }

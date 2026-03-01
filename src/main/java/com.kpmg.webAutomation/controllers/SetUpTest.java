@@ -1,9 +1,12 @@
 package com.kpmg.webAutomation.controllers;
 
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
 import com.kpmg.webAutomation.common.Log4jUtil;
 import org.apache.logging.log4j.Logger;
 import org.testng.ITestContext;
+import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
@@ -20,6 +23,14 @@ public class SetUpTest extends DriverManager {
     protected static Properties props;
     protected static String path;
     protected static String UTILS_FILE_PATH;
+    protected static String reportPath;
+    protected static String successimagespath;
+    protected static String failureimagespath;
+    public static String suiteName;
+    public static String strClassName;
+    public static String strFlow;
+    public static String scenarioName;
+    public static boolean blnPortFlag;
 
     @BeforeMethod(alwaysRun = true)
     public void startOfTest(ITestContext context) throws IOException {
@@ -29,12 +40,26 @@ public class SetUpTest extends DriverManager {
 
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestContext context){
+        ExtentTest extLogger;
+        extLogger = (ExtentTest) Reporter.getCurrentTestResult().getTestContext()
+                .getAttribute("extLogger" + Thread.currentThread().hashCode());
+
+        ExtentReports extentReport = (ExtentReports) Reporter.getCurrentTestResult().getTestContext()
+                .getAttribute("extentReport" + Thread.currentThread().hashCode());
+        extentReport.flush();
         DriverManager.getDriver().quit();
     }
 
     @BeforeSuite(alwaysRun = true)
     public void launchApplication() throws Exception {
         setPath();
+        try {
+            strClassName = this.getClass().getSimpleName();
+            strFlow = strClassName;
+            strFlow = this.getClass().getSimpleName().replaceAll("Test.*", "").trim().toLowerCase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getURL(String env) throws FileNotFoundException, IOException {
@@ -73,7 +98,9 @@ public class SetUpTest extends DriverManager {
         try {
             UTILS_FILE_PATH = path + "/src/main/resources/webConfig/environment.properties";
             props.load(new FileInputStream(UTILS_FILE_PATH));
-
+            reportPath = props.getProperty("reportPath");
+            successimagespath = path + props.getProperty("successimagespath");
+            failureimagespath = path + props.getProperty("failureimagespath");
             strEnv = getEnv();
 
         } catch (Exception e) {

@@ -5,6 +5,9 @@ import org.openqa.selenium.support.FindBy;
 
 public class HomePageLocators {
 
+    @FindBy(xpath = "//div/label[text()='Days:']/parent::div/div/label[tent::div/input")
+    public WebElement btnFail;
+
     @FindBy(xpath = "//div/label[text()='Name:']/following-sibling::input[@id='name']")
     public WebElement btnName;
 
@@ -22,6 +25,8 @@ public class HomePageLocators {
 
     @FindBy(xpath = "//div/label[text()='Days:']/parent::div/div/label[text()='Monday']/parent::div/input")
     public WebElement btnWeekDay;
+
+
 
 
 //        Select select = new Select(driver.findElement(By.xpath("//label[text()='Country:']/parent::div/select")));

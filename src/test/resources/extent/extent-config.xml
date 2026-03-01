@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extentreports>
+	<configuration>
+
+		<!-- ===================== -->
+		<!-- Visual Theme -->
+		<!-- ===================== -->
+		<!-- standard | dark -->
+		<theme>dark</theme>
+
+		<!-- ===================== -->
+		<!-- Encoding & Protocol -->
+		<!-- ===================== -->
+		<encoding>UTF-8</encoding>
+		<protocol>https</protocol>
+
+		<!-- ===================== -->
+		<!-- Browser Tab Title -->
+		<!-- ===================== -->
+		<documentTitle>KPMG Automation Report</documentTitle>
+
+		<!-- ===================== -->
+		<!-- Top Navigation -->
+		<!-- ===================== -->
+		<reportName>KPMG Web Automation</reportName>
+		<reportHeadline>Test Execution Summary</reportHeadline>
+
+		<!-- ===================== -->
+		<!-- Date / Time -->
+		<!-- ===================== -->
+		<dateFormat>yyyy-MM-dd</dateFormat>
+		<timeFormat>HH:mm:ss</timeFormat>
+
+		<!-- ===================== -->
+		<!-- Custom JavaScript -->
+		<!-- ===================== -->
+		<scripts>
+			<![CDATA[
+                $(document).ready(function () {
+
+                    // Highlight failed tests more clearly
+                    $('.test.fail').css('border-left', '5px solid #e74c3c');
+
+                    // Add tooltip for status badges
+                    $('.status').attr('title', 'Test Execution Status');
+
+                });
+            ]]>
+		</scripts>
+
+		<!-- ===================== -->
+		<!-- Custom Styles -->
+		<!-- ===================== -->
+		<styles>
+			<![CDATA[
+                /* Header branding */
+                .brand-logo {
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+
+                /* Improve readability */
+                .test-content {
+                    font-size: 14px;
+                }
+
+                /* Passed tests */
+                .test.pass {
+                    background-color: #f3fff5;
+                }
+
+                /* Failed tests */
+                .test.fail {
+                    background-color: #fff5f5;
+                }
+
+                /* Skipped tests */
+                .test.skip {
+                    background-color: #fffbe6;
+                }
+            ]]>
+		</styles>
+
+	</configuration>
+</extentreports>
