@@ -1,27 +1,33 @@
-# 📘 KPMG Automation Framework
+# 📘 KPMG Web Automation Framework
 
 ## 📌 Overview
 
-This project is a web automation testing framework (**Java + Selenium + Maven + TestNG automation framework**) built using a layered, enterprise level architecture.
+This project is a **Java + Selenium + Maven + TestNG web automation framework** built using a **layered, enterprise-grade architecture**.
+
+The framework is designed for **scalability, maintainability, parallel execution, and CI/CD readiness**, following industry best practices used in large consulting and enterprise environments.
+
+---
+
+## ✨ Key Features
 
 The framework supports:
 
 * Browser selection via JVM arguments
 * Environment-based configuration
-* Thread-safe WebDriver handling
+* Thread-safe WebDriver handling using `ThreadLocal`
 * Page Object Model using PageFactory
 * Listener-driven test lifecycle
 * Scenario orchestration layer
 * DAO interaction layer
-* Centralized utilities
-* Reporting-ready architecture
-* **Centralized Log4j2 logging**
+* Centralized reusable utilities
+* Centralized **Log4j2 logging**
+* Rich **Extent Spark HTML reporting**
+* Parallel execution ready
+* CI/CD friendly architecture
 
 ---
 
----
-
-# 🏗️ Framework Architecture
+## 🏗️ Framework Architecture
 
 ```
 Test Class
@@ -37,9 +43,7 @@ Selenium WebDriver
 
 ---
 
----
-
-# 📂 Package Structure
+## 📂 Package Structure
 
 ```
 com.kpmg.webAutomation
@@ -47,51 +51,47 @@ com.kpmg.webAutomation
 ├── automationTests
 │   └── functional          → TestNG test classes
 │
-├── scenarios               → Business flows
+├── scenarios               → Business flows (orchestration layer)
 │
 ├── dao                     → Page interaction logic
 │
-├── objectRepository        → @FindBy locators
+├── objectRepository        → Page locators (@FindBy)
 │
-├── utils                   → Common reusable actions
+├── utils                   → Common reusable Selenium utilities
 │
 ├── controllers
-│   ├── DriverManager       → ThreadLocal WebDriver
-│   ├── DriverClass         → Browser creation
-│   └── SetUpTest           → Test lifecycle hooks
+│   ├── DriverManager       → ThreadLocal WebDriver storage
+│   ├── DriverClass         → Browser instantiation
+│   └── SetUpTest           → Test lifecycle base class
 │
 ├── common
 │   ├── Listeners           → TestNG listeners
-│   └── Log4jUtil           → Central logging bootstrap
+│   └── Log4jUtil           → Central Log4j2 bootstrap
 │
 └── resources
-    ├── webConfig           → Environment configs
+    ├── webConfig           → Environment configuration
     └── commonConfig        → log4j2.xml
 ```
 
 ---
 
----
+## 🚀 Execution Flow
 
-# 🚀 Execution Flow
+### ✅ 1. TestNG starts execution
 
----
-
-## ✅ 1. TestNG starts test
-
-Test class extends `SetUpTest`.
+Each test class extends `SetUpTest`.
 
 ---
 
-## ✅ 2. Listener initializes logging + browser
+### ✅ 2. Listener initializes logging & browser
 
 Inside `Listeners.beforeInvocation()`:
 
-* Initializes Log4j via `Log4jUtil`
-* Reads browser from JVM
-* Creates WebDriver
-* Stores in `ThreadLocal`
-* Opens application URL
+* Log4j2 is initialized via `Log4jUtil`
+* Browser value is read from JVM arguments
+* WebDriver instance is created
+* Driver is stored in `ThreadLocal`
+* Application URL is launched
 
 ```java
 WebDriver driver = DriverClass.createInstance(browserName);
@@ -101,11 +101,7 @@ driver.get(SetUpTest.strUrlVal);
 
 ---
 
----
-
-## ✅ 3. Scenario Layer orchestrates flow
-
-Example:
+### ✅ 3. Scenario Layer orchestrates business flows
 
 ```java
 public void verifyUserDataFromHomePage() throws Exception {
@@ -113,19 +109,19 @@ public void verifyUserDataFromHomePage() throws Exception {
 }
 ```
 
-Scenarios contain **only business flows**.
+✔ Scenarios contain **only business logic**
+✔ No Selenium code
+✔ No assertions
 
 ---
 
----
-
-## ✅ 4. DAO performs actions
+### ✅ 4. DAO Layer performs page actions
 
 DAO initializes:
 
-* WebDriver
+* Thread-safe WebDriver
 * PageFactory locators
-* Utilities
+* Utility classes
 
 ```java
 this.driverInstance = DriverManager.getDriver();
@@ -135,34 +131,34 @@ this.homeLocatorsPage =
 
 ---
 
----
-
-## ✅ 5. Locators defined separately
+### ✅ 5. Object Repository holds locators
 
 ```java
 @FindBy(xpath = "//input[@id='name']")
-public WebElement btnName;
+public WebElement txtName;
 ```
 
----
+✔ No logic
+✔ Only locators
 
 ---
 
-## ✅ 6. Utilities wrap Selenium
+### ✅ 6. Utilities wrap Selenium actions
 
 ```java
 public boolean type(WebElement element, String message, String value)
 ```
 
-All waits and interactions live here.
+✔ Explicit waits
+✔ Logging
+✔ Error handling
+✔ Reusability
 
 ---
 
----
+### ✅ 7. Tear Down
 
-## ✅ 7. Tear down
-
-After method:
+After test execution:
 
 ```java
 DriverManager.getDriver().quit();
@@ -170,13 +166,9 @@ DriverManager.getDriver().quit();
 
 ---
 
----
+## ⚙️ Running Tests
 
-# ⚙️ Running Tests
-
----
-
-## ▶ From IntelliJ
+### ▶ From IntelliJ
 
 Add VM options:
 
@@ -189,19 +181,15 @@ Run TestNG test.
 
 ---
 
----
-
-## ▶ From Maven
+### ▶ From Maven
 
 ```
--DTestEnv=qa -Dbrowser=chrome
+mvn clean test -DTestEnv=qa -Dbrowser=chrome
 ```
 
 ---
 
----
-
-# 🌍 Environment Configuration
+## 🌍 Environment Configuration
 
 Stored in:
 
@@ -218,151 +206,172 @@ prod=https://prod.example.com
 
 ---
 
----
+## 🪵 Logging with Log4j2
 
-# 🪵 Logging with Log4j2
+This framework uses **Log4j2** for centralized, enterprise-grade logging.
 
-This framework uses **Log4j2** for enterprise-grade logging.
+### 🔹 Logging Capabilities
 
-Logging is:
-
-✔ Initialized centrally
-✔ Folder structure created automatically
-✔ Grouped by execution date
-✔ Separate log file per run
+✔ Initialized centrally via Listener
+✔ Thread-safe logging
+✔ Console + file logging
+✔ Date-based folders
+✔ Separate log file per execution
 ✔ Rolling by size
-✔ Printed to console + file
 ✔ CI/CD friendly
 
 ---
 
----
-
-## 📂 Log Folder Structure
-
-Each execution creates:
+### 📂 Log Folder Structure
 
 ```
 webAutomationLogs/
    └── dd-MM-yyyy/
          ├── dd-MM-yyyy_HH-mm-ss.log
-         ├── dd-MM-yyyy_HH-mm-ss.log
-```
-
-Example:
-
-```
-webAutomationLogs/
-   └── 11-02-2026/
-         ├── 11-02-2026_12-18-14.log
-         └── 11-02-2026_12-29-34.log
+         └── dd-MM-yyyy_HH-mm-ss.log
 ```
 
 ---
 
----
+### 🧩 Central Logging Utility
 
-## ⚙️ Log4j Initialization Flow
-
-```
-TestNG Listener
-     ↓
-Log4jUtil.init()
-     ↓
-Create webAutomationLogs folder
-     ↓
-Create today's date folder
-     ↓
-Generate runId timestamp
-     ↓
-Set JVM properties
-     ↓
-Load log4j2.xml
-     ↓
-All classes obtain logger via Log4jUtil
-```
-
----
-
----
-
-## 🧩 Central Logger Utility
-
-All loggers must be obtained through:
+All loggers must be obtained via:
 
 ```java
 Logger log = Log4jUtil.loadLogger(MyClass.class);
 ```
 
-⚠️ No class should call `LogManager.getLogger()` directly — this ensures:
-
-* folders exist first
-* runId is set
-* correct configuration is used
+⚠️ No class should call `LogManager.getLogger()` directly.
 
 ---
 
----
+### ▶ Logging Troubleshooting
 
-## ▶ Troubleshooting Logging
-
-Enable debug once:
+Enable once if needed:
 
 ```
 -Dlog4j2.debug=true
 ```
 
-This prints:
+---
 
-* which config file loaded
-* which appenders started
-* file locations
+## 📊 Reporting with Extent Reports
+
+The framework integrates **ExtentReports (Spark Reporter)** to generate rich, interactive HTML reports.
+
+### ✨ Report Features
+
+✔ Pass / Fail / Skip summary
+✔ Execution timeline
+✔ Test duration
+✔ Tags & categories
+✔ Interactive dashboard
+✔ Expandable test details
+✔ Spark UI theme
 
 ---
 
+### 📂 Extent Report Output Structure
+
+#### Root Directory
+
+```
+C:\Automation\Regression_Report\
+```
+
+#### Date-Based Folder
+
+```
+C:\Automation\Regression_Report\03-01-2026\
+```
+
+#### Suite & Execution Type
+
+```
+C:\Automation\Regression_Report\03-01-2026\REGRESSION\
+```
+
+#### Feature / Module Level
+
+```
+C:\Automation\Regression_Report\03-01-2026\REGRESSION\login\
+```
+
+#### Final HTML Report
+
+```
+C:\Automation\Regression_Report\03-01-2026\REGRESSION\login\
+verifyLoginfromHomePageTwo2026.03.01.12.12.10.html
+```
+
+✔ One report per execution
+✔ No overwrites
+✔ Parallel-safe
+
 ---
 
-# 🧠 Key Design Concepts
+### ⚙️ Extent Initialization Flow
+
+```
+TestNG Listener
+     ↓
+Create date folder
+     ↓
+Create suite folder
+     ↓
+Create feature folder
+     ↓
+Generate timestamped report name
+     ↓
+Initialize ExtentSparkReporter
+     ↓
+Attach ExtentReports
+     ↓
+Log test lifecycle
+     ↓
+Flush report on finish
+```
 
 ---
 
-## 🔐 ThreadLocal Driver
+## 🧠 Key Design Concepts
 
-Each test thread has its own WebDriver:
+### 🔐 ThreadLocal WebDriver
 
 ```java
 private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 ```
 
----
+✔ Each test thread has its own driver
+✔ Safe for parallel execution
 
 ---
 
-## 🧩 Listener Driven Startup
+### 🧩 Listener-Driven Startup
 
-Driver creation happens in Listener — **not in DAO/Test**.
+✔ Driver creation handled in Listener
+✔ Logging initialized before test execution
+✔ Reports managed centrally
 
 This avoids:
 
-❌ null drivers
-❌ race conditions
-❌ parallel failures
+❌ Null drivers
+❌ Race conditions
+❌ Parallel execution failures
 
 ---
 
----
+### ⚠️ Common Pitfall (Avoid This)
 
-## ⚠️ Common Pitfall (What You Hit)
+#### ❌ Creating DAO too early
 
-### ❌ Creating DAO too early
-
-If DAO is constructed **before** Listener runs:
+If DAO is initialized **before Listener runs**:
 
 ```
 DriverManager.getDriver() → null
 ```
 
-👉 leads to:
+Result:
 
 ```
 searchContext is null
@@ -370,9 +379,7 @@ searchContext is null
 
 ---
 
-### ✅ Correct Pattern
-
-Create DAO **inside Scenario method**, not constructor.
+### ✅ Correct Pattern (Lazy Loading)
 
 ```java
 private HomePageDAO getHomePageDAO() {
@@ -380,38 +387,35 @@ private HomePageDAO getHomePageDAO() {
     if (homePageDAO == null) {
         homePageDAO = new HomePageDAO();
     }
-
     return homePageDAO;
 }
 ```
 
 ---
 
----
-
-# 🛠️ Best Practices
+## 🛠️ Best Practices
 
 ✔ Never initialize DAO in Scenario constructor
 ✔ Always lazy-load DAO
 ✔ Keep Scenarios thin
-✔ DAO handles page only
+✔ DAO handles page-level actions only
 ✔ Utilities wrap Selenium
-✔ DriverManager is single source of driver
-✔ No static WebDriver fields elsewhere
-✔ Centralized logging only via Log4jUtil
+✔ DriverManager is the single source of WebDriver
+✔ No static WebDriver references
+✔ Centralized logging via Log4jUtil only
+✔ Reporting logic only in Listener
 
 ---
 
----
+## 🔮 Future Enhancements
 
-# 🔮 Future Enhancements
-
-* ExtentReports integration
-* Retry analyzer
 * Screenshot capture on failure
-* Docker/Grid support
-* CI/CD pipelines
-* Parallel execution
+* Attach screenshots to Extent Reports
+* Retry analyzer
+* Docker & Selenium Grid support
+* CI/CD pipeline integration
+* Parallel execution tuning
 * TestRail integration
 * API + UI hybrid testing
 * Dynamic test data management
+
