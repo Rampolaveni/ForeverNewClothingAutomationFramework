@@ -1,4 +1,4 @@
-# 📘 KPMG Web Automation Framework
+# 📘 Forever NewClothing Web Automation Framework
 
 ## 📌 Overview
 
